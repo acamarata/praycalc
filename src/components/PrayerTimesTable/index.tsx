@@ -20,11 +20,11 @@ const PrayerTimesTable: React.FC<PrayerTimesTableProps> = ({ visible, prayerTime
       <table className={styles.table}>
         <tbody>
           {Object.entries(prayerTimes)
-          .filter(([, timeObj]) => moment(timeObj.time, 'HH:mm').isValid())
-          .map(([prayerName, timeObj], index) => (
+          .filter(([, timeString]) => moment(timeString, 'HH:mm').isValid())
+          .map(([prayerName, timeString], index) => (
             <tr key={prayerName} className={grayTextPrayers.has(prayerNames[index]) ? styles.grayText : ''}>
               <td>{prayerNames[index]}</td>
-              <td className={styles.rightAligned}>{moment(timeObj.time, 'HH:mm').format('h:mm A')}</td>
+              <td>{timeString}</td>
             </tr>
           ))}
         </tbody>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import getLocation from '../helpers/getLocation';
+import { getLocation } from '../helpers/getLocation';
 
 interface GeoLocation {
   latitude: number;
