@@ -1,0 +1,11 @@
+.error, .message { /* Add .message selector */
+  font-size: 13px;
+}
+
+.error {
+  color: darkred;
+}
+
+.message {
+  color: #888;
+}
