@@ -14,7 +14,8 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const [userSearchedCity, setUserSearchedCity] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const geoLocation = useGeoLocation();
+  const [displayLocationMessage, setDisplayLocationMessage] = useState(false);
+  const [geoLocation, geolocationFinished] = useGeoLocation();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -27,6 +28,12 @@ const HomePage = () => {
     setSearchCoordinates(coordinates);
     setCityName(cityData.city);
   };
+  
+  useEffect(() => {
+    if (geolocationFinished && geoLocation === null) {
+      setDisplayLocationMessage(true);
+    }
+  }, [geolocationFinished, geoLocation]);
 
   useEffect(() => {
     if (prayerTimes || error) {
@@ -47,7 +54,10 @@ const HomePage = () => {
       <div ref={containerRef} className={styles.container}>
         <h1>PrayCalc.net</h1>
         <SearchBar onSearch={(coordinates, cityData) => handleSearch(coordinates, cityData)} />
-        {geoLocation === null && !loading && !userSearchedCity && (
+        {!geolocationFinished && !userSearchedCity && !prayerTimes && !error && (
+          <ErrorMessage message="Loading..." isError={false} />
+        )}
+        {geoLocation === null && geolocationFinished && !prayerTimes && !error && !userSearchedCity && !loading && (
           <ErrorMessage message="Automatic location unavailable. Please enter your city to get started!" isError={false} />
         )}
         {loading && (
@@ -58,7 +68,6 @@ const HomePage = () => {
       {prayerTimes && (
         <div className={styles.resultsContainer}>
           <PrayerTimesTable
-//            visible={prayerTimesTableVisible}
             visible={showResults}
             prayerTimes={prayerTimes}
             cityName={cityName}

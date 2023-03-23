@@ -6,6 +6,8 @@ const calculatePrayerTimes = async (latitude: number, longitude: number): Promis
   const date = new Date();
   const times = SunCalc.getTimes(date, latitude, longitude);
 
+  console.log("Suncalc Times: ", times)
+
   return {
     fajr: times.nadir,
     sunrise: times.sunrise,
@@ -18,11 +20,9 @@ const calculatePrayerTimes = async (latitude: number, longitude: number): Promis
 
 const formatPrayerTimes = (prayerTimes: any): any => {
   const timezone = moment.tz.guess();
-  const formattedTimes = Object.entries(prayerTimes).map(([name, time]) => {
-    return {
-      name,
-      time: moment(time).tz(timezone).format('H:mm a'),
-    };
+  const formattedTimes = {};
+  Object.entries(prayerTimes).forEach(([name, time]) => {
+    formattedTimes[name] = moment(time).tz(timezone).format('H:mm a');
   });
 
   return formattedTimes;
