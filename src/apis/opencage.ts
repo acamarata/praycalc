@@ -19,3 +19,28 @@ export async function getLatLngFromCity(city: string): Promise<LatLng | null> {
   }
   return null;
 }
+
+export async function reverseGeocode(
+  latitude: number,
+  longitude: number
+): Promise<{ city: string; country: string }> {
+  if (!API_KEY) {
+    throw new Error("OpenCage API key is missing.");
+  }
+
+  const response = await fetch(
+    `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${API_KEY}`
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      const { components } = data.results[0];
+      const city = components.city || components.town || components.village;
+      const country = components.country;
+      return { city, country };
+    }
+  }
+
+  throw new Error("Unable to reverse geocode coordinates.");
+}

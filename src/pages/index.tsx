@@ -10,45 +10,61 @@ import { LatLng } from '../interfaces';
 
 const HomePage = () => {
   const [searchCoordinates, setSearchCoordinates] = useState<LatLng | null>(null);
+  const [cityName, setCityName] = useState<string>('');
+  const [loading, setLoading] = useState(false);
   const [userSearchedCity, setUserSearchedCity] = useState(false);
-  const [resultsVisible, setResultsVisible] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const geoLocation = useGeoLocation();
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const coordinates = searchCoordinates || geoLocation;
   const { prayerTimes, error } = useFetchPrayerTimes(coordinates?.latitude || null, coordinates?.longitude || null);
 
-  const handleSearch = async (coordinates: LatLng) => {
+  const handleSearch = async (coordinates: LatLng, cityData: { city: string }) => {
+    setLoading(true);
     setUserSearchedCity(true);
     setSearchCoordinates(coordinates);
+    setCityName(cityData.city);
   };
 
   useEffect(() => {
+    if (prayerTimes || error) {
+      setLoading(false);
+    }
     if (prayerTimes) {
       if (containerRef.current) {
         containerRef.current.classList.add(styles.topLeft);
       }
-
-      // Added setTimeout to delay the fade-in of the Results block
       setTimeout(() => {
-        setResultsVisible(true);
-      }, 1000);
+        setShowResults(true);
+      }, 300);
     }
-  }, [prayerTimes]);
+  }, [prayerTimes, error]);
 
   return (
     <MainLayout>
       <div ref={containerRef} className={styles.container}>
         <h1>PrayCalc.org</h1>
-        <SearchBar onSearch={handleSearch} />
-        {geoLocation === null && !userSearchedCity && (
+        <SearchBar onSearch={(coordinates, cityData) => handleSearch(coordinates, cityData)} />
+        {geoLocation === null && !loading && !userSearchedCity && (
           <ErrorMessage message="Automatic location unavailable. Please enter your city to get started!" isError={false} />
+        )}
+        {loading && (
+          <ErrorMessage message="Loading..." isError={false} />
         )}
         {error && <ErrorMessage message={error} />}
       </div>
-      <div className={styles.tableContainer}>
-        {prayerTimes && <PrayerTimesTable prayerTimes={prayerTimes} visible={resultsVisible} />}
-      </div>
+      {prayerTimes && (
+        <div className={styles.resultsContainer}>
+          <PrayerTimesTable
+//            visible={prayerTimesTableVisible}
+            visible={showResults}
+            prayerTimes={prayerTimes}
+            cityName={cityName}
+          />
+        </div>
+      )}
     </MainLayout>
   );
 };

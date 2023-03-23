@@ -1,26 +1,45 @@
 import { useState, useRef } from 'react';
 import { LatLng } from '../../interfaces';
-import { getLatLngFromCity } from '../../apis/opencage';
+import { getLatLngFromCity, reverseGeocode } from '../../apis/opencage';
 import styles from './styles.module.css';
 
 interface SearchBarProps {
-  onSearch: (coordinates: LatLng) => void;
+  onSearch: (coordinates: LatLng, cityData: any) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = (({ onSearch }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = async (searchValue: string) => {
+    if (searchValue.trim() === '') {
+      return;
+    }
+
+    try {
+      const coordinates = await getLatLngFromCity(searchValue);
+      if (!coordinates) {
+        throw new Error('Coordinates not found.');
+      }
+
+      const cityData = await reverseGeocode(coordinates.latitude, coordinates.longitude);
+      if (!cityData) {
+        throw new Error('City data not found.');
+      }
+
+      if (onSearch) {
+        onSearch(coordinates, cityData);
+      }
+    } catch (error) {
+      console.error('City not found. Please try again.', error);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (inputRef.current) {
       const cityName = inputRef.current.value;
-      try {
-        const coordinates = await getLatLngFromCity(cityName);
-        onSearch(coordinates);
-        inputRef.current.value = '';
-      } catch (error) {
-        console.error(error);
-      }
+      handleSearch(cityName);
+      inputRef.current.value = '';
     }
   };
 
@@ -40,6 +59,6 @@ const SearchBar: React.FC<SearchBarProps> = (({ onSearch }) => {
       </div>
     </form>
   );
-});
+};
 
 export default SearchBar;

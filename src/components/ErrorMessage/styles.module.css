@@ -1,11 +1,21 @@
-.error, .message { /* Add .message selector */
-  font-size: 13px;
+.container {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+  height: 50px;
 }
 
 .error {
-  color: darkred;
+  color: #f44336;
+  font-size: 14px;
 }
 
-.message {
+.helper {
   color: #888;
+  font-size: 13px;
 }
