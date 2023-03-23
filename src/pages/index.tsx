@@ -45,7 +45,7 @@ const HomePage = () => {
   return (
     <MainLayout>
       <div ref={containerRef} className={styles.container}>
-        <h1>PrayCalc.org</h1>
+        <h1>PrayCalc.net</h1>
         <SearchBar onSearch={(coordinates, cityData) => handleSearch(coordinates, cityData)} />
         {geoLocation === null && !loading && !userSearchedCity && (
           <ErrorMessage message="Automatic location unavailable. Please enter your city to get started!" isError={false} />

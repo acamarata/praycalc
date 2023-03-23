@@ -10,7 +10,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   return (
     <div className={styles.wrapper}>
       <Head>
-        <title>PrayCalc.org</title>
+        <title>PrayCalc.net</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       {children}
