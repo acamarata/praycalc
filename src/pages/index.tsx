@@ -50,7 +50,7 @@ const HomePage = () => {
   return (
     <MainLayout>
       <div ref={containerRef} className={styles.container}>
-        <h1>PrayCalc.net</h1>
+        <h1>PrayCalc.net <span>[Beta]</span></h1>
         <SearchBar onSearch={(coordinates, cityData) => handleSearch(coordinates, cityData)} />
         {!geolocationFinished && !userSearchedCity && !prayerTimes && !error && (
           <ErrorMessage message="Loading..." isError={false} />

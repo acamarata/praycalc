@@ -6,7 +6,7 @@ const About = () => {
   return (
     <MainLayout>
       <div className="aboutContainer">
-        <h1>About PrayCalc</h1>
+        <h1>About PrayCalc <span>[Beta]</span></h1>
         <div className={styles.content}>
           <p>
             PrayCalc was created to give a long needed update to calculation of prayer times.  Firstly, it must be noted, that creating a comprehensive and accurate formula that accounts for all the factors that improves upon existing methods is a complex task, see an introduction to this <a href="https://en.wikipedia.org/wiki/Salah_times#Time_calculation">here</a>. That said every calculator available currently uses a static angle that works for certain regions but not others. Our major improvement focus was not relying on regional static angles that are overly general and cause prayer times to be off by several minutes or more. Additionally we implemented modern, more robust, and more accurate algorithms for solar calculations, such as the ones used in the NOAA Solar Calculator as a base starting point for the formulas.
