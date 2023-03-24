@@ -9,9 +9,23 @@
   padding: 1rem;
 }
 
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 1.5s ease-in-out;
+  height: 180px;
+}
+
 .container h1 {
   margin: 0;
   text-align: center;
+}
+
+.slideUp {
+  top: 50px;
+  transform: translate(-50%, 0);
 }
 
 .aboutContainer {
@@ -61,4 +75,12 @@
 .link {
   cursor: pointer;
   color: #4caf50;
+}
+
+.resultsContainer {
+  position: fixed;
+  top: 430px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 3s ease-in-out;
 }

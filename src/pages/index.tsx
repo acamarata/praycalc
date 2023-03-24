@@ -17,7 +17,7 @@ const HomePage = () => {
   const [geoLocation, geolocationFinished] = useGeoLocation();
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const [slideUp, setSlideUp] = useState(false);
   const coordinates = searchCoordinates || geoLocation;
   const { prayerTimes, error } = useFetchPrayerTimes(coordinates?.latitude || null, coordinates?.longitude || null);
 
@@ -38,19 +38,17 @@ const HomePage = () => {
       setLoading(false);
     }
     if (prayerTimes) {
-      if (containerRef.current) {
-        containerRef.current.classList.add(styles.topLeft);
-      }
+      setSlideUp(true);
       setTimeout(() => {
         setShowResults(true);
-      }, 300);
+      }, 1000);
     }
   }, [prayerTimes, error]);
 
   return (
     <MainLayout>
-      <div ref={containerRef} className={styles.container}>
-        <h1>PrayCalc.net <span>[Beta]</span></h1>
+      <div ref={containerRef} className={`${styles.container} ${slideUp ? styles.slideUp : ''}`}>
+      <h1>PrayCalc.net <span>[Beta]</span></h1>
         <SearchBar onSearch={(coordinates, cityData) => handleSearch(coordinates, cityData)} />
         {!geolocationFinished && !userSearchedCity && !prayerTimes && !error && (
           <ErrorMessage message="Loading..." isError={false} />
