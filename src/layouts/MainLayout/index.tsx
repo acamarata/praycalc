@@ -22,7 +22,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <div className={styles.linkWrapper}>
         <Link href={isAboutPage ? '/' : '/about'} passHref>
           <span className={styles.link}>
-            {isAboutPage ? 'Back to PrayCalc.org' : 'About PrayCalc.org'}
+            {isAboutPage ? 'Back to PrayCalc.net' : 'About PrayCalc.net'}
           </span>
         </Link>
       </div>
