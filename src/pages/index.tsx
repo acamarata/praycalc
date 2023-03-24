@@ -10,7 +10,6 @@ import { LatLng } from '../interfaces';
 
 const HomePage = () => {
   const [searchCoordinates, setSearchCoordinates] = useState<LatLng | null>(null);
-  const [cityName, setCityName] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [userSearchedCity, setUserSearchedCity] = useState(false);
   const [showResults, setShowResults] = useState(false);
@@ -26,7 +25,6 @@ const HomePage = () => {
     setLoading(true);
     setUserSearchedCity(true);
     setSearchCoordinates(coordinates);
-    setCityName(cityData.city);
   };
   
   useEffect(() => {
@@ -70,7 +68,10 @@ const HomePage = () => {
           <PrayerTimesTable
             visible={showResults}
             prayerTimes={prayerTimes}
-            cityName={cityName}
+            cityName={prayerTimes.city}
+            state={prayerTimes.state}
+            country={prayerTimes.country}
+            timezone={prayerTimes.timezone}
           />
         </div>
       )}

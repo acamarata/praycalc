@@ -23,7 +23,7 @@ export async function getLatLngFromCity(city: string): Promise<LatLng | null> {
 export async function reverseGeocode(
   latitude: number,
   longitude: number
-): Promise<{ city: string; country: string }> {
+): Promise<{ city: string; country: string; timezone: string }> {
   if (!API_KEY) {
     throw new Error("OpenCage API key is missing.");
   }
@@ -35,10 +35,12 @@ export async function reverseGeocode(
   if (response.ok) {
     const data = await response.json();
     if (data.results && data.results.length > 0) {
-      const { components } = data.results[0];
+      const { components, annotations } = data.results[0];
       const city = components.city || components.town || components.village;
+      const state = components.state;
       const country = components.country;
-      return { city, country };
+      const timezone = annotations.timezone.name;
+      return { city, state, country, timezone };
     }
   }
 

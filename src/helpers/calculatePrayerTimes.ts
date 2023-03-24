@@ -2,11 +2,27 @@ import moment from 'moment-timezone';
 import SunCalc from 'suncalc';
 import { LatLng } from '../interfaces';
 
-const calculatePrayerTimes = async (latitude: number, longitude: number): Promise<any> => {
+interface RawPrayerTimes {
+  fajr: Date;
+  sunrise: Date;
+  dhuhr: Date;
+  asr: Date;
+  maghrib: Date;
+  isha: Date;
+}
+
+interface PrayerTimes {
+  fajr: string;
+  sunrise: string;
+  dhuhr: string;
+  asr: string;
+  maghrib: string;
+  isha: string;
+}
+
+const calculatePrayerTimes = async (latitude: number, longitude: number): Promise<RawPrayerTimes> => {
   const date = new Date();
   const times = SunCalc.getTimes(date, latitude, longitude);
-
-  console.log("Suncalc Times: ", times)
 
   return {
     fajr: times.nadir,
@@ -18,14 +34,22 @@ const calculatePrayerTimes = async (latitude: number, longitude: number): Promis
   };
 };
 
-const formatPrayerTimes = (prayerTimes: any): any => {
-  const timezone = moment.tz.guess();
-  const formattedTimes = {};
-  Object.entries(prayerTimes).forEach(([name, time]) => {
-    formattedTimes[name] = moment(time).tz(timezone).format('H:mm a');
-  });
+function formatPrayerTimes(prayerTimes: RawPrayerTimes, timezone: string): PrayerTimes {
+  if (!timezone) {
+    throw new Error('No timezone provided');
+  }
 
-  return formattedTimes;
-};
+  const formattedTimes: Partial<PrayerTimes> = {};
+
+  for (const [key, value] of Object.entries(prayerTimes)) {
+    if (value instanceof Date) {
+      formattedTimes[key as keyof PrayerTimes] = moment(value).tz(timezone).format('h:mm A');
+    } else {
+      formattedTimes[key as keyof PrayerTimes] = value;
+    }
+  }
+
+  return formattedTimes as PrayerTimes;
+}
 
 export { calculatePrayerTimes, formatPrayerTimes };
