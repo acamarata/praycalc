@@ -5,9 +5,20 @@ import { LatLng, RawPrayerTimes, PrayerTimes } from '../interfaces';
 const calculatePrayerTimes = async (latitude: number, longitude: number): Promise<RawPrayerTimes> => {
   const date = new Date();
 
-  // Calculate the dynamic Fajr and Isha angles
-  const fajrAngle = -18 - 0.05 * Math.abs(latitude);
-  const ishaAngle = -18 + 0.05 * Math.abs(latitude);
+  // Calculate the day of the year
+  const dayOfYear = moment(date).dayOfYear();
+
+  // Calculate the base Fajr and Isha angles
+  const fajrBaseAngle = -18 - 0.05 * Math.abs(latitude);
+  const ishaBaseAngle = -18 + 0.05 * Math.abs(latitude);
+
+  // Calculate the dynamic Fajr and Isha angles based on day of the year
+  const fajrAngle = fajrBaseAngle + 6 * Math.sin(2 * Math.PI * dayOfYear / 365);
+  let ishaAngle = ishaBaseAngle - 6 * Math.sin(2 * Math.PI * dayOfYear / 365);
+
+  // Adjust Isha angle based on latitude
+  const latitudeFactor = Math.abs(latitude) / 90;
+  ishaAngle = fajrAngle + latitudeFactor * (ishaAngle - fajrAngle);
 
   // Calculate Dhuhr time and Asr angle
   const solar = SunCalc.getTimes(date, latitude, longitude);
