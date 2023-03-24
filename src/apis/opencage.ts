@@ -47,3 +47,23 @@ export async function reverseGeocode(
 
   throw new Error("Unable to reverse geocode coordinates.");
 }
+
+export async function reverseGeocodeFromIP(): Promise<LatLng> {
+  if (!API_KEY) {
+    throw new Error('OpenCage API key is missing.');
+  }
+
+  const response = await fetch(
+    `https://api.opencagedata.com/geocode/v1/json?key=${API_KEY}`
+  );
+
+  if (response.ok) {
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      const { lat, lng } = data.results[0].geometry;
+      return { latitude: lat, longitude: lng };
+    }
+  }
+
+  throw new Error('Unable to reverse geocode IP.');
+}

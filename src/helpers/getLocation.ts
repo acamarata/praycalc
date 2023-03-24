@@ -1,4 +1,5 @@
 import { LatLng } from '../interfaces';
+import { reverseGeocodeFromIP } from '../apis/opencage';
 
 const DEFAULT_LOCATION: LatLng = {
   latitude: 0,
@@ -40,4 +41,14 @@ export async function getLocation(): Promise<LatLng> {
   }
 
   return DEFAULT_LOCATION;
+}
+
+export async function getFallbackLocation(): Promise<LatLng> {
+  try {
+    const location = await reverseGeocodeFromIP();
+    return { latitude: location.latitude, longitude: location.longitude };
+  } catch (err) {
+    console.error('Error getting fallback location:', err);
+    throw err;
+  }
 }
