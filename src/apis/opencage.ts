@@ -1,3 +1,4 @@
+// src/apis/opencage.ts
 import { LatLng } from '../interfaces';
 
 const API_KEY = process.env.NEXT_PUBLIC_OPENCAGE_API_KEY;
@@ -23,7 +24,7 @@ export async function getLatLngFromCity(city: string): Promise<LatLng | null> {
 export async function reverseGeocode(
   latitude: number,
   longitude: number
-): Promise<{ city: string; country: string; timezone: string }> {
+): Promise<{ city: string; state?: string; country: string; timezone: string }> { // Add the optional state property
   if (!API_KEY) {
     throw new Error("OpenCage API key is missing.");
   }
