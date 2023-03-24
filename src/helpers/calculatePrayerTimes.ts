@@ -1,36 +1,34 @@
 import moment from 'moment-timezone';
 import SunCalc from 'suncalc';
-import { LatLng } from '../interfaces';
-
-interface RawPrayerTimes {
-  fajr: Date;
-  sunrise: Date;
-  dhuhr: Date;
-  asr: Date;
-  maghrib: Date;
-  isha: Date;
-}
-
-interface PrayerTimes {
-  fajr: string;
-  sunrise: string;
-  dhuhr: string;
-  asr: string;
-  maghrib: string;
-  isha: string;
-}
+import { LatLng, RawPrayerTimes, PrayerTimes } from '../interfaces';
 
 const calculatePrayerTimes = async (latitude: number, longitude: number): Promise<RawPrayerTimes> => {
   const date = new Date();
+
+  // Calculate the dynamic Fajr and Isha angles
+  const fajrAngle = -18 - 0.05 * Math.abs(latitude);
+  const ishaAngle = -18 + 0.05 * Math.abs(latitude);
+
+  // Calculate Dhuhr time and Asr angle
+  const solar = SunCalc.getTimes(date, latitude, longitude);
+  const solarNoon = solar.solarNoon;
+  const solarPosition = SunCalc.getPosition(solarNoon, latitude, longitude);
+  const asrAngle = (Math.atan(1 / (1 / Math.tan(solarPosition.altitude) + 1))) * 180 / Math.PI;
+  const dhuhrTime = new Date(solarNoon.getTime() + 5 * 60 * 1000);
+
+  // Set prayer times
+  SunCalc.addTime(fajrAngle, 'fajr', '');
+  SunCalc.addTime(asrAngle, '', 'asr');
+  SunCalc.addTime(ishaAngle, '', 'isha');
   const times = SunCalc.getTimes(date, latitude, longitude);
 
   return {
-    fajr: times.nadir,
+    fajr: times.fajr,
     sunrise: times.sunrise,
-    dhuhr: times.solarNoon,
-    asr: times.goldenHour,
+    dhuhr: dhuhrTime,
+    asr: times.asr,
     maghrib: times.sunset,
-    isha: times.night,
+    isha: times.isha,
   };
 };
 

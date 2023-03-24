@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { PrayerTimes } from '../../interfaces';
+import { PrayerTimesString } from '../../interfaces';
 import styles from './styles.module.css';
 import moment from 'moment-timezone';
 
 interface PrayerTimesTableProps {
   visible: boolean;
-  prayerTimes: PrayerTimes;
+  prayerTimes: PrayerTimesString;
   cityName: string;
   state: string | null;
   country: string;
